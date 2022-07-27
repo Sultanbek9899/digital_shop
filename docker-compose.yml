@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  shop:
+    container_name: shop
+    restart: always
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile
+    command: run
+    volumes:
+      - .:/app/
+      - ./staticfiles:/app/staticfiles
+      - ./media:/app/media
+    env_file:
+      - .env
+    ports:
+      - 8005:8005
+    links:
+      - db
+    depends_on:
+      - db
+
+  db:
+    container_name: shop_db
+    restart: always
+    image: postgres:12.4-alpine
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+    env_file:
+      .env
+    ports:
+      - 5435:5432
+
+volumes:
+  postgres-data:
