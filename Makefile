@@ -13,6 +13,16 @@ collectstatic:
 	@echo "Copying collectstatic files..."
 	python manage.py collectstatic --noinput
 
+.PHONY: beat
+beat:
+	@echo "Running celery beat..."
+	celery -A backend.config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+
+.PHONY: celery
+celery:
+	@echo "Running celery workers..."
+	celery -A backend.config worker -l info
+
 .PHONY: clean
 clean:
 	@echo -n "Clear temp files..."

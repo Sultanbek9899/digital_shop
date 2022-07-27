@@ -44,10 +44,11 @@ services:
       - 5435:5432
 
   celery_worker:
-    command: sh -c "wait-for rabbitmq:5672 && wait-for shop:8005 -- celery -A digital_shop worker -l info"
+    command:  celery
     container_name: celery_worker
     build:
-      context: ./config
+      context: .
+      dockerfile: dockerfiles/Dockerfile
     depends_on:
       - shop
       - db
@@ -56,9 +57,10 @@ services:
     hostname: celery_worker
 
   celery_beat:
-    command: sh -c "wait-for rabbitmq:5672 && wait-for shop:8005 -- celery -A digital_shop beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    command: beat
     build:
-      context: ./config
+      context: .
+      dockerfile: dockerfiles/Dockerfile
     container_name: celery_beat
     depends_on:
       - shop
