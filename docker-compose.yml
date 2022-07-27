@@ -20,6 +20,17 @@ services:
       - db
     depends_on:
       - db
+  rabbit:
+    hostname: rabbit
+    image: rabbitmq:3-management
+    env_file:
+      - .env
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
 
   db:
     container_name: shop_db
@@ -32,5 +43,30 @@ services:
     ports:
       - 5435:5432
 
+  celery_worker:
+    command: sh -c "wait-for rabbitmq:5672 && wait-for shop:8005 -- celery -A digital_shop worker -l info"
+    container_name: celery_worker
+    build:
+      context: ./config
+    depends_on:
+      - shop
+      - db
+      - rabbit
+    restart: always
+    hostname: celery_worker
+
+  celery_beat:
+    command: sh -c "wait-for rabbitmq:5672 && wait-for shop:8005 -- celery -A digital_shop beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    build:
+      context: ./config
+    container_name: celery_beat
+    depends_on:
+      - shop
+      - db
+      - rabbit
+    hostname: celery_beat
+    restart: always
+
 volumes:
   postgres-data:
+  rabbitmq_data:
