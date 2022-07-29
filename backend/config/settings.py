@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django_celery_beat",
     'rest_framework',
     'drf_yasg',
-
+    'silk',
 
     'backend.apps.service'
 ]
@@ -54,9 +54,11 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'backend.config.middleware.ResponseCheckMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
+    'silk.middleware.SilkyMiddleware',
+
+    'backend.config.middleware.ResponseCheckMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.config.urls'
