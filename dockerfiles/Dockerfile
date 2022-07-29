@@ -6,9 +6,20 @@ ENV TZ=Asia/Bishkek
 
 RUN apk add --no-cache gcc postgresql-dev zlib-dev \
     libjpeg-turbo-dev gettext linux-headers musl-dev make \
-    python3-dev libffi-dev openssl-dev cargo  postgresql-client \
-    && rm -rf /var/apt/list/*
+    python3-dev libffi-dev openssl-dev cargo  postgresql-client  wkhtmltopdf \
+    && rm -rf /var/apt/list/* \
+CMD ["mkdir -p -m 0700 /run/user/0"]
+ENV XDG_RUNTIME_DIR=/run/user/0
+## ^-- This is the interesting line for you
 
+CMD [ \
+    "pandoc", \
+    "demo.md", \
+    "--output", "demo.pdf", \
+    "--pdf-engine", "wkhtmltopdf", \
+    "--metadata", "pagetitle='Demo'", \
+    "chmod 7700 /tmp"  \
+]
 WORKDIR /app
 
 COPY requirements.txt requirements.txt

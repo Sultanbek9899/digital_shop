@@ -1,0 +1,19 @@
+<h1> Shop Products Quantity Report </h1>
+<table class="">
+  <thead>
+    <tr>
+      <th >Product Name</th>
+      <th >Price</th>
+      <th >Quantity/>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <th>{{ product.name }}</th>
+      <td>{{product.price}}</td>
+      <td>{{product.quantity}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
